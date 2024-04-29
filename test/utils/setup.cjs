@@ -5,12 +5,13 @@ const mongoose = require('mongoose')
 
 before(async () => {
     const { loadEnvironment } = await import('../../src/loaders/environment.js')
+    loadEnvironment()
+
     const { loadDatabase } = await import('../../src/loaders/database.js')
+    await loadDatabase()
+
     const { Assertion, expect } = await import('chai')
     const chai = await import('chai')
-
-    loadEnvironment()
-    await loadDatabase()
 
     Assertion.addMethod(
         'matchSchema',
@@ -26,6 +27,7 @@ before(async () => {
             expect(error).to.be.undefined
         }
     )
+
     Assertion.addMethod(
         'throwValidationError',
         /**
@@ -53,10 +55,14 @@ before(async () => {
             expect(caughtError).to.be.true
         }
     )
+
     chai.config.truncateThreshold = 0
 })
 
 beforeEach(async () => {
     const collections = mongoose.connection.collections
-    for (const key in collections) await collections[key].deleteMany()
+    for (const key in collections) {
+        if (key === 'categories') continue
+        await collections[key].deleteMany()
+    }
 })

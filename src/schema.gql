@@ -19,6 +19,12 @@ input LoginInput {
     password: String!
 }
 
+input AddEntryInput {
+    date: String!
+    categoryId: ID!
+    sum: Int!
+}
+
 type AuthResponse {
     session: Session!
     user: User!
@@ -28,9 +34,22 @@ type Queries {
     ping: String
 }
 
+type Category {
+    _id: ID!
+    name: String!
+}
+
+type Entry {
+    _id: ID!
+    date: String!
+    category: Category!
+    sum: Int!
+}
+
 type Mutations {
     register(registerInput: RegisterInput): AuthResponse!
     login(loginInput: LoginInput): AuthResponse!
+    addEntry(addEntryInput: AddEntryInput): Entry!
 }
 
 schema {

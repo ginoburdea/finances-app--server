@@ -4,7 +4,7 @@ import { loadDatabase } from './loaders/database.js'
 
 loadEnvironment()
 await loadDatabase()
-const app = await loadServer()
+const app = loadServer()
 
 await new Promise(resolve => {
     app.listen(process.env.APP_PORT, process.env.APP_HOST, resolve)

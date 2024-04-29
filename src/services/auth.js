@@ -73,4 +73,20 @@ export const authService = {
             user: userPublicInfo(user),
         }
     },
+    /**
+     *
+     * @param {string} token
+     * @returns {Promise<User?>}
+     */
+    tokenToUser: async token => {
+        const session = await Session.findOne({ token })
+        if (!session) return
+
+        if (session.expiresAt < new Date()) {
+            await Session.deleteOne({ _id: session._id })
+            return
+        }
+
+        return session.user
+    },
 }

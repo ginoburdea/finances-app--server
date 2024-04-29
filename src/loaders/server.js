@@ -6,6 +6,7 @@ import { graphqlResolvers } from '../resolvers/index.js'
 import { buildSchema } from 'graphql'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
+import { graphqlHandleContext } from '../utils/graphqlHandleContext.js'
 
 export const loadServer = () => {
     const app = express()
@@ -20,6 +21,7 @@ export const loadServer = () => {
                 readFileSync(resolve('src/schema.gql'), 'utf8')
             ),
             rootValue: graphqlResolvers,
+            context: graphqlHandleContext,
         })
     )
 
