@@ -34,11 +34,11 @@ before(async () => {
         async function (onField) {
             const data = this._obj
 
-            console.log({ data })
+            let caughtError = false
             try {
-                const res = await data()
-                console.log({ res })
+                await data()
             } catch (err) {
+                caughtError = true
                 expect(err).to.be.instanceOf(GraphQLError)
 
                 expect(err?.extensions?.code).to.equal(
@@ -49,6 +49,8 @@ before(async () => {
                     expect(err?.path?.at(0)).to.equal(onField)
                 }
             }
+
+            expect(caughtError).to.be.true
         }
     )
     chai.config.truncateThreshold = 0

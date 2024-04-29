@@ -6,4 +6,8 @@ export const authValidators = {
         username: Joi.string().min(6).max(64).required(),
         password: Joi.string().min(8).max(64).required(),
     }),
+    login: Joi.object({
+        username: Joi.string().required(),
+        password: Joi.string().required(),
+    }),
 }

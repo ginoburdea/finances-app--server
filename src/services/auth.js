@@ -3,7 +3,7 @@ import { genValidationError } from '../utils/genValidationError.js'
 import { Session } from '../schemas/Session.js'
 import { randomBytes } from 'crypto'
 import dayjs from 'dayjs'
-import { hash } from 'bcrypt'
+import { compare, hash } from 'bcrypt'
 
 const genSession = async userId => {
     const session = await Session.create({
@@ -41,6 +41,32 @@ export const authService = {
             username: registerInput.username,
             password: await hash(registerInput.password, 12),
         })
+
+        return {
+            session: await genSession(user._id),
+            user: userPublicInfo(user),
+        }
+    },
+    /**
+     * @param {{ username: string, password: string}} registerInput
+     * @returns {Promise<{session: { token: string, expiresAt: string }, user: { name: string, username: string }}>}
+     */
+    login: async loginInput => {
+        const user = await User.findOne({ username: loginInput.username })
+        if (!user) {
+            throw genValidationError(
+                'username',
+                'there is no user registered with that username'
+            )
+        }
+
+        const correctPassword = await compare(
+            loginInput.password,
+            user.password
+        )
+        if (!correctPassword) {
+            throw genValidationError('password', 'wrong password')
+        }
 
         return {
             session: await genSession(user._id),

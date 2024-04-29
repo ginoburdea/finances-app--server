@@ -8,4 +8,9 @@ export const authResolvers = {
         validator: authValidators.register,
         handler: authService.register,
     }),
+    login: genResolver({
+        getData: data => data.loginInput,
+        validator: authValidators.login,
+        handler: authService.login,
+    }),
 }

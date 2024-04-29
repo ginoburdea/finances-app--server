@@ -13,4 +13,5 @@ const authResponse = Joi.object({
 
 export const authServiceValidator = {
     register: authResponse,
+    login: authResponse,
 }
