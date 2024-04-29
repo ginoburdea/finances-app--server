@@ -1,0 +1,8 @@
+{
+    "file": "test/utils/setup.cjs",
+    "recursive": true,
+    "include": "test/**/*.spec.js",
+    "timeout": 5000,
+    "sort": true,
+    "exit": true
+}

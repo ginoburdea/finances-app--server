@@ -1,0 +1,33 @@
+type User {
+    name: String!
+    username: String!
+}
+
+type Session {
+    token: ID!
+    expiresAt: String!
+}
+
+input RegisterInput {
+    name: String!
+    username: String!
+    password: String!
+}
+
+type AuthResponse {
+    session: Session!
+    user: User!
+}
+
+type Queries {
+    ping: String
+}
+
+type Mutations {
+    register(registerInput: RegisterInput): AuthResponse!
+}
+
+schema {
+    query: Queries
+    mutation: Mutations
+}
