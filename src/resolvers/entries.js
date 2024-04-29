@@ -15,4 +15,10 @@ export const entriesResolvers = {
         handler: entriesService.getEntries,
         requiresAuth: true,
     }),
+    entryTotals: genResolver({
+        getData: data => data.entryTotalsInput,
+        validator: entriesValidators.getEntryTotals,
+        handler: entriesService.getEntryTotals,
+        requiresAuth: true,
+    }),
 }

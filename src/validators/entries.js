@@ -12,4 +12,8 @@ export const entriesValidators = {
         categoryId: Joi.string().pattern(mongoIdPattern, 'id'),
         page: Joi.number().integer().min(0).required(),
     }),
+    getEntryTotals: Joi.object({
+        categoryId: Joi.string().pattern(mongoIdPattern, 'id'),
+        preset: Joi.string().required(),
+    }),
 }

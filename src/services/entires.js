@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { Entry } from '../schemas/Entry.js'
 import { Category } from '../schemas/Category.js'
 import { genValidationError } from '../utils/genValidationError.js'
+import { Types } from 'mongoose'
 
 /**
  * @typedef {Object} IEntry
@@ -15,6 +16,17 @@ import { genValidationError } from '../utils/genValidationError.js'
  * @typedef {Object} ICategory
  * @param {string} _id
  * @param {string} name
+ */
+
+/**
+ * @typedef {Object} ITotal
+ * @param {string} date
+ * @param {number} sum
+ * @param {ICategory} category
+ */
+
+/**
+ * @typedef { 'LAST_7_DAYS' | 'LAST_30_DAYS' | 'NEXT_7_DAYS' | 'NEXT_30_DAYS' } EntryTotalsPresets
  */
 
 /**
@@ -32,7 +44,7 @@ const getEntryPublicInfo = entry => ({
 })
 
 const getChildCategoryIds = async _id => {
-    const result = []
+    const result = [_id]
 
     const children = await Category.find({ parent: _id }).select('_id').exec()
     for (const child of children) {
@@ -100,5 +112,88 @@ export const entriesService = {
             .exec()
 
         return entries.map(entry => getEntryPublicInfo(entry))
+    },
+    /**
+     * @param {{categoryId: string, preset: EntryTotalsPresets, userId: string}} entryTotalsInput
+     * @returns {Promise<ITotal[]>}
+     */
+    getEntryTotals: async entryTotalsInput => {
+        const category = await Category.findById(entryTotalsInput.categoryId)
+        if (!category) {
+            throw genValidationError(
+                'categoryId',
+                'Category not found. Please select one from the list'
+            )
+        }
+
+        const today = dayjs().startOf('day')
+        let minDate
+        let maxDate
+
+        switch (entryTotalsInput.preset) {
+            case 'LAST_7_DAYS': {
+                minDate = today.subtract(7, 'days').toDate()
+                maxDate = today.toDate()
+                break
+            }
+
+            case 'LAST_30_DAYS': {
+                minDate = today.subtract(30, 'days').toDate()
+                maxDate = today.toDate()
+                break
+            }
+
+            case 'NEXT_7_DAYS': {
+                minDate = today.toDate()
+                maxDate = today.add(7, 'days').toDate()
+                break
+            }
+
+            case 'NEXT_30_DAYS': {
+                minDate = today.toDate()
+                maxDate = today.add(30, 'days').toDate()
+                break
+            }
+        }
+
+        const totals = await Entry.aggregate([
+            {
+                $match: {
+                    user: new Types.ObjectId(entryTotalsInput.userId),
+                    date: { $gte: minDate, $lte: maxDate },
+                    category: {
+                        $in: await getChildCategoryIds(category._id),
+                    },
+                },
+            },
+            {
+                $set: {
+                    sum: { $multiply: ['$sum', 100] },
+                },
+            },
+            {
+                $group: {
+                    _id: '$date',
+                    sum: { $sum: '$sum' },
+                },
+            },
+            {
+                $set: {
+                    sum: { $divide: ['$sum', 100] },
+                },
+            },
+            {
+                $sort: { _id: 1 },
+            },
+        ])
+
+        return totals.map(total => ({
+            date: total._id.toISOString(),
+            sum: total.sum,
+            category: {
+                _id: category._id.toString(),
+                name: category.name,
+            },
+        }))
     },
 }

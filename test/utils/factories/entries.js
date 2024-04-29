@@ -14,7 +14,7 @@ export const entriesFactory = {
     createMany: async (
         userId,
         count = faker.number.int({ min: 25, max: 50 }),
-        overwrites
+        overwrites = {}
     ) => {
         const entities = Array(count)
             .fill(null)
@@ -26,6 +26,46 @@ export const entriesFactory = {
                 user: userId,
             }))
 
-        const res = await Entry.insertMany(entities)
+        await Entry.insertMany(entities)
+    },
+    createManyRecent: async (
+        userId,
+        recentDays,
+        count = faker.number.int({ min: 25, max: 50 }),
+        overwrites = {}
+    ) => {
+        const entities = Array(count)
+            .fill(null)
+            .map(() => entriesFactory.make(userId, overwrites))
+            .map(data => ({
+                sum: data.sum,
+                date: dayjs(faker.date.recent({ days: recentDays }))
+                    .startOf('day')
+                    .toDate(),
+                category: data.categoryId,
+                user: userId,
+            }))
+
+        await Entry.insertMany(entities)
+    },
+    createManySoon: async (
+        userId,
+        soonDays,
+        count = faker.number.int({ min: 25, max: 50 }),
+        overwrites = {}
+    ) => {
+        const entities = Array(count)
+            .fill(null)
+            .map(() => entriesFactory.make(userId, overwrites))
+            .map(data => ({
+                sum: data.sum,
+                date: dayjs(faker.date.soon({ days: soonDays }))
+                    .startOf('day')
+                    .toDate(),
+                category: data.categoryId,
+                user: userId,
+            }))
+
+        await Entry.insertMany(entities)
     },
 }

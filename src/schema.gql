@@ -31,14 +31,33 @@ input GetEntriesInput {
     page: Int!
 }
 
+enum DailyTotalsPreset {
+    LAST_7_DAYS
+    LAST_30_DAYS
+    NEXT_7_DAYS
+    NEXT_30_DAYS
+}
+
+input EntryTotalsInput {
+    categoryId: ID!
+    preset: DailyTotalsPreset!
+}
+
 type AuthResponse {
     session: Session!
     user: User!
 }
 
+type DailyTotals {
+    date: String!
+    sum: Float!
+    category: Category!
+}
+
 type Queries {
     ping: String
     entries(getEntriesInput: GetEntriesInput!): [Entry!]!
+    entryTotals(entryTotalsInput: EntryTotalsInput!): [DailyTotals!]!
 }
 
 type Category {

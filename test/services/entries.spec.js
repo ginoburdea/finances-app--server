@@ -7,6 +7,7 @@ import { entriesServiceValidators } from '../utils/validators/services/entires.j
 import { Types } from 'mongoose'
 import { faker } from '@faker-js/faker'
 import { categories } from '../../src/loaders/database.js'
+import dayjs from 'dayjs'
 
 describe('Entries service', () => {
     describe('addEntry', () => {
@@ -130,6 +131,100 @@ describe('Entries service', () => {
 
             expect(res).to.matchSchema(entriesServiceValidators.getEntries)
             expect(res).to.have.length(20)
+        })
+    })
+
+    describe('getEntryTotals', () => {
+        it('Should get totals in the last 7 days', async () => {
+            const user = await userFactory.create()
+            const categoryId = faker.helpers.arrayElement(categories)._id
+            await entriesFactory.createManyRecent(user.id, 7, 10, {
+                categoryId,
+            })
+
+            const res = await entriesService.getEntryTotals({
+                preset: 'LAST_7_DAYS',
+                categoryId,
+                userId: user.id,
+            })
+
+            expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
+            expect(res.length).to.be.greaterThan(0)
+
+            const ago7Days = dayjs().subtract(7, 'days').toDate().getTime()
+            for (const entry of res) {
+                expect(Date.parse(entry.date)).to.be.greaterThanOrEqual(
+                    ago7Days
+                )
+            }
+        })
+
+        it('Should get totals in the last 30 days', async () => {
+            const user = await userFactory.create()
+            const categoryId = faker.helpers.arrayElement(categories)._id
+            await entriesFactory.createManyRecent(user.id, 30, 10, {
+                categoryId,
+            })
+
+            const res = await entriesService.getEntryTotals({
+                preset: 'LAST_30_DAYS',
+                categoryId,
+                userId: user.id,
+            })
+
+            expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
+            expect(res.length).to.be.greaterThan(0)
+
+            const ago30Days = dayjs().subtract(30, 'days').toDate().getTime()
+            for (const entry of res) {
+                expect(Date.parse(entry.date)).to.be.greaterThanOrEqual(
+                    ago30Days
+                )
+            }
+        })
+
+        it('Should get totals in the next 7 days', async () => {
+            const user = await userFactory.create()
+            const categoryId = faker.helpers.arrayElement(categories)._id
+            await entriesFactory.createManySoon(user.id, 7, 10, { categoryId })
+
+            const res = await entriesService.getEntryTotals({
+                preset: 'NEXT_7_DAYS',
+                categoryId,
+                userId: user.id,
+            })
+
+            expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
+            expect(res.length).to.be.greaterThan(0)
+
+            const future7Days = dayjs().subtract(7, 'days').toDate().getTime()
+            for (const entry of res) {
+                expect(Date.parse(entry.date)).to.be.greaterThanOrEqual(
+                    future7Days
+                )
+            }
+        })
+
+        it('Should get totals in the next 30 days', async () => {
+            const user = await userFactory.create()
+            const categoryId = faker.helpers.arrayElement(categories)._id
+            await entriesFactory.createManySoon(user.id, 30, 10, { categoryId })
+
+            const res = await entriesService.getEntryTotals({
+                preset: 'NEXT_30_DAYS',
+                categoryId,
+                userId: user.id,
+            })
+
+            expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
+            expect(res.length).to.be.greaterThan(0)
+
+            const future30Days = dayjs().subtract(30, 'days').toDate().getTime()
+            for (const entry of res) {
+                expect(Date.parse(entry.date)).to.be.greaterThanOrEqual(
+                    future30Days
+                )
+            }
         })
     })
 })
