@@ -38,7 +38,7 @@ type AuthResponse {
 
 type Queries {
     ping: String
-    entries(getEntriesInput: GetEntriesInput): [Entry!]!
+    entries(getEntriesInput: GetEntriesInput!): [Entry!]!
 }
 
 type Category {
@@ -54,9 +54,9 @@ type Entry {
 }
 
 type Mutations {
-    register(registerInput: RegisterInput): AuthResponse!
-    login(loginInput: LoginInput): AuthResponse!
-    addEntry(addEntryInput: AddEntryInput): Entry!
+    register(registerInput: RegisterInput!): AuthResponse!
+    login(loginInput: LoginInput!): AuthResponse!
+    addEntry(addEntryInput: AddEntryInput!): Entry!
 }
 
 schema {

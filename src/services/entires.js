@@ -8,7 +8,7 @@ import { genValidationError } from '../utils/genValidationError.js'
  * @param {string} _id
  * @param {string} date
  * @param {number} sum
- * @param {category} ICategory
+ * @param {ICategory} category
  */
 
 /**
