@@ -25,6 +25,12 @@ input AddEntryInput {
     sum: Int!
 }
 
+input GetEntriesInput {
+    date: String!
+    categoryId: ID
+    page: Int!
+}
+
 type AuthResponse {
     session: Session!
     user: User!
@@ -32,6 +38,7 @@ type AuthResponse {
 
 type Queries {
     ping: String
+    entries(getEntriesInput: GetEntriesInput): [Entry!]!
 }
 
 type Category {

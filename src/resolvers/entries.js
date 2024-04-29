@@ -9,4 +9,10 @@ export const entriesResolvers = {
         handler: entriesService.addEntry,
         requiresAuth: true,
     }),
+    entries: genResolver({
+        getData: data => data.getEntriesInput,
+        validator: entriesValidators.getEntries,
+        handler: entriesService.getEntries,
+        requiresAuth: true,
+    }),
 }
