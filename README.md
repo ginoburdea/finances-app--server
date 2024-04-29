@@ -44,3 +44,7 @@ The project structure is inspired by the controller/service/model structure. Ins
 -   Factories (useful for seeding the database): `test/utils/factories`
 -   Service response validators: `test/utils/validators/services`
 -   E2E response validators (soon): `test/utils/validators/e2e`
+
+## License
+
+This project is licensed under the MIT license. See the `LICENSE.md` file for more information.

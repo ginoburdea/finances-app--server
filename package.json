@@ -1,7 +1,7 @@
 {
     "name": "server",
     "version": "0.1.0",
-    "description": "",
+    "license": "MIT",
     "type": "module",
     "scripts": {
         "dev": "nodemon src/index.js",
