@@ -151,7 +151,11 @@ describe('Entries service', () => {
             expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
             expect(res.length).to.be.greaterThan(0)
 
-            const ago7Days = dayjs().subtract(7, 'days').toDate().getTime()
+            const ago7Days = dayjs()
+                .subtract(7, 'days')
+                .startOf('day')
+                .toDate()
+                .getTime()
             for (const entry of res) {
                 expect(Date.parse(entry.date)).to.be.greaterThanOrEqual(
                     ago7Days
@@ -175,7 +179,11 @@ describe('Entries service', () => {
             expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
             expect(res.length).to.be.greaterThan(0)
 
-            const ago30Days = dayjs().subtract(30, 'days').toDate().getTime()
+            const ago30Days = dayjs()
+                .subtract(30, 'days')
+                .startOf('day')
+                .toDate()
+                .getTime()
             for (const entry of res) {
                 expect(Date.parse(entry.date)).to.be.greaterThanOrEqual(
                     ago30Days
@@ -197,9 +205,9 @@ describe('Entries service', () => {
             expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
             expect(res.length).to.be.greaterThan(0)
 
-            const future7Days = dayjs().subtract(7, 'days').toDate().getTime()
+            const future7Days = dayjs().add(7, 'days').toDate().getTime()
             for (const entry of res) {
-                expect(Date.parse(entry.date)).to.be.greaterThanOrEqual(
+                expect(Date.parse(entry.date)).to.be.lessThanOrEqual(
                     future7Days
                 )
             }
@@ -219,9 +227,9 @@ describe('Entries service', () => {
             expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
             expect(res.length).to.be.greaterThan(0)
 
-            const future30Days = dayjs().subtract(30, 'days').toDate().getTime()
+            const future30Days = dayjs().add(30, 'days').toDate().getTime()
             for (const entry of res) {
-                expect(Date.parse(entry.date)).to.be.greaterThanOrEqual(
+                expect(Date.parse(entry.date)).to.be.lessThanOrEqual(
                     future30Days
                 )
             }
