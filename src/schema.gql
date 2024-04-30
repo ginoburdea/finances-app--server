@@ -43,6 +43,10 @@ input EntryTotalsInput {
     preset: DailyTotalsPreset!
 }
 
+input GetCategoriesInput {
+    parent: ID
+}
+
 type AuthResponse {
     session: Session!
     user: User!
@@ -58,11 +62,18 @@ type Queries {
     ping: String
     entries(getEntriesInput: GetEntriesInput!): [Entry!]!
     entryTotals(entryTotalsInput: EntryTotalsInput!): [DailyTotals!]!
+    categories(getCategoriesInput: GetCategoriesInput!): [CategoryWithParent!]!
 }
 
 type Category {
     _id: ID!
     name: String!
+}
+
+type CategoryWithParent {
+    _id: ID!
+    name: String!
+    parent: ID
 }
 
 type Entry {
