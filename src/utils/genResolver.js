@@ -30,7 +30,7 @@ export const genResolver = ({
         })
         if (error) {
             const { path, message } = error.details[0]
-            throw genValidationError(path, message)
+            throw genValidationError(path[0], message)
         }
 
         return await handler({ ...value, userId: args?.userId })
