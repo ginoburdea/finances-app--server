@@ -187,13 +187,31 @@ export const entriesService = {
             },
         ])
 
-        return totals.map(total => ({
-            date: total._id.toISOString(),
-            sum: total.sum,
-            category: {
-                _id: category._id.toString(),
-                name: category.name,
-            },
-        }))
+        const oneDay = 86400000
+        const totalDays = (maxDate - minDate) / oneDay
+
+        const minDateDayjs = dayjs(minDate)
+        return Array(totalDays)
+            .fill(null)
+            .map((_, index) => {
+                const currentDate = minDateDayjs.add(index, 'days').toDate()
+
+                const foundTotal = totals.find(
+                    total => total.date === currentDate
+                )
+                if (foundTotal) {
+                    return { date: foundTotal._id, sum: foundTotal.sum }
+                }
+
+                return { date: currentDate, sum: 0 }
+            })
+            .map(total => ({
+                date: total.date.toISOString(),
+                sum: total.sum,
+                category: {
+                    _id: category._id.toString(),
+                    name: category.name,
+                },
+            }))
     },
 }

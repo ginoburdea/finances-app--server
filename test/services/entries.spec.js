@@ -149,7 +149,7 @@ describe('Entries service', () => {
             })
 
             expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
-            expect(res.length).to.be.greaterThan(0)
+            expect(res.length).to.equal(7)
 
             const ago7Days = dayjs()
                 .subtract(7, 'days')
@@ -177,7 +177,7 @@ describe('Entries service', () => {
             })
 
             expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
-            expect(res.length).to.be.greaterThan(0)
+            expect(res.length).to.equal(30)
 
             const ago30Days = dayjs()
                 .subtract(30, 'days')
@@ -203,7 +203,7 @@ describe('Entries service', () => {
             })
 
             expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
-            expect(res.length).to.be.greaterThan(0)
+            expect(res.length).to.equal(7)
 
             const future7Days = dayjs().add(7, 'days').toDate().getTime()
             for (const entry of res) {
@@ -225,7 +225,7 @@ describe('Entries service', () => {
             })
 
             expect(res).to.matchSchema(entriesServiceValidators.getEntryTotals)
-            expect(res.length).to.be.greaterThan(0)
+            expect(res.length).to.equal(30)
 
             const future30Days = dayjs().add(30, 'days').toDate().getTime()
             for (const entry of res) {
