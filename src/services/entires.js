@@ -185,6 +185,14 @@ export const entriesService = {
             {
                 $sort: { _id: 1 },
             },
+            {
+                $set: {
+                    date: '$_id',
+                },
+            },
+            {
+                $unset: '_id',
+            },
         ])
 
         const oneDay = 86400000
@@ -194,13 +202,13 @@ export const entriesService = {
         return Array(totalDays)
             .fill(null)
             .map((_, index) => {
-                const currentDate = minDateDayjs.add(index, 'days').toDate()
+                const currentDate = minDateDayjs.add(index, 'days')
 
-                const foundTotal = totals.find(
-                    total => total.date === currentDate
+                const foundTotal = totals.find(total =>
+                    dayjs(total.date).isSame(currentDate)
                 )
                 if (foundTotal) {
-                    return { date: foundTotal._id, sum: foundTotal.sum }
+                    return { date: foundTotal.date, sum: foundTotal.sum }
                 }
 
                 return { date: currentDate, sum: 0 }
