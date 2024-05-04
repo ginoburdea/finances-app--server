@@ -1,10 +1,11 @@
+import { Types } from 'mongoose'
 import { Category } from '../schemas/Category.js'
 import { genValidationError } from '../utils/genValidationError.js'
 
 export const categoriesService = {
     /**
      * @param {{parent?: string}} getCategoriesInput
-     * @returns {Promise<{_id: string, name: string, parent?: string}[]>}
+     * @returns {Promise<{_id: string, name: string, parent?: string, hasChildren: boolean}[]>}
      */
     getCategories: async getCategoriesInput => {
         let parentCategory
@@ -18,16 +19,30 @@ export const categoriesService = {
             }
         }
 
-        const categories = await Category.find({
-            parent: getCategoriesInput.parent
-                ? getCategoriesInput.parent
-                : null,
-        })
+        const categories = await Category.aggregate([
+            {
+                $match: {
+                    parent: getCategoriesInput.parent
+                        ? new Types.ObjectId(getCategoriesInput.parent)
+                        : null,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: '_id',
+                    foreignField: 'parent',
+                    pipeline: [{ $limit: 1 }, { $project: { _id: true } }],
+                    as: 'children',
+                },
+            },
+        ])
 
         return categories.map(cat => ({
             _id: cat._id.toString(),
             name: cat.name,
             parent: cat.parent ? cat.parent.toString() : null,
+            hasChildren: cat.children.length !== 0,
         }))
     },
 }

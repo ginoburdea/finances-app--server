@@ -7,6 +7,7 @@ export const categoriesServiceValidators = {
             _id: Joi.string().pattern(mongoIdPattern).required(),
             name: Joi.string().required(),
             parent: Joi.string().pattern(mongoIdPattern).allow(null),
+            hasChildren: Joi.bool().required(),
         })
     ),
 }
