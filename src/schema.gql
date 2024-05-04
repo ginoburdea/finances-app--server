@@ -22,13 +22,13 @@ input LoginInput {
 input AddEntryInput {
     date: String!
     categoryId: ID!
-    sum: Int!
+    sum: Float!
 }
 
 input GetEntriesInput {
     date: String!
     categoryId: ID
-    page: Int!
+    page: Float!
 }
 
 enum DailyTotalsPreset {
@@ -81,7 +81,7 @@ type Entry {
     _id: ID!
     date: String!
     category: Category!
-    sum: Int!
+    sum: Float!
 }
 
 type Mutations {
