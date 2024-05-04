@@ -66,17 +66,17 @@ export const categories = [
     {
         _id: '662f9806fc13ae4967a2411a',
         name: 'Eating out',
-        parent: '662f9806fc13ae4967a24115',
+        parent: '662f9806fc13ae4967a24119',
     },
     {
         _id: '662f9806fc13ae4967a2411b',
         name: 'Presents',
-        parent: '662f9806fc13ae4967a24115',
+        parent: '662f9806fc13ae4967a24119',
     },
     {
         _id: '662f9806fc13ae4967a2411c',
         name: 'Movies',
-        parent: '662f9806fc13ae4967a24115',
+        parent: '662f9806fc13ae4967a24119',
     },
 
     // Category Transportation
@@ -88,22 +88,22 @@ export const categories = [
     {
         _id: '662f9806fc13ae4967a2411e',
         name: 'Bus tickets',
-        parent: '662f9806fc13ae4967a24115',
+        parent: '662f9806fc13ae4967a2411d',
     },
     {
         _id: '662f9806fc13ae4967a2411f',
         name: 'Train tickets',
-        parent: '662f9806fc13ae4967a24115',
+        parent: '662f9806fc13ae4967a2411d',
     },
     {
         _id: '662f9806fc13ae4967a24120',
         name: 'Plane tickets',
-        parent: '662f9806fc13ae4967a24115',
+        parent: '662f9806fc13ae4967a2411d',
     },
     {
         _id: '662f9806fc13ae4967a24121',
         name: 'Gas',
-        parent: '662f9806fc13ae4967a24115',
+        parent: '662f9806fc13ae4967a2411d',
     },
 
     // No category
