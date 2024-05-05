@@ -28,7 +28,7 @@ input AddEntryInput {
 input GetEntriesInput {
     date: String!
     categoryId: ID
-    page: Float!
+    page: Int!
 }
 
 enum DailyTotalsPreset {
