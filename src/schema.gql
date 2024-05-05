@@ -80,8 +80,9 @@ type CategoryWithParent {
 type Entry {
     _id: ID!
     date: String!
-    category: Category!
     sum: Float!
+    isIncome: Boolean!
+    category: Category!
 }
 
 type Mutations {

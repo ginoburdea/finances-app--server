@@ -7,10 +7,12 @@ import { buildSchema } from 'graphql'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { graphqlHandleContext } from '../utils/graphqlHandleContext.js'
+import morgan from 'morgan'
 
 export const loadServer = () => {
     const app = express()
 
+    app.use(morgan('common'))
     app.use(bodyParser.json())
     app.use(cors({ origin: process.env.CORS_WHITELISTED_ORIGIN }))
 

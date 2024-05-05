@@ -9,6 +9,7 @@ import { Types } from 'mongoose'
  * @param {string} _id
  * @param {string} date
  * @param {number} sum
+ * @param {boolean} isIncome
  * @param {ICategory} category
  */
 
@@ -33,15 +34,25 @@ import { Types } from 'mongoose'
  * @param {Entry} entry
  * @returns {IEntry}
  */
-const getEntryPublicInfo = entry => ({
-    _id: entry._id.toString(),
-    date: entry.date.toISOString(),
-    sum: entry.sum,
-    category: {
-        _id: entry.category._id.toString(),
-        name: entry.category.name,
-    },
-})
+const getEntryPublicInfo = entry => {
+    const incomeCategories = [
+        '662f9806fc13ae4967a24110',
+        '662f9806fc13ae4967a24111',
+        '662f9806fc13ae4967a24112',
+        '662f9806fc13ae4967a24113',
+    ]
+
+    return {
+        _id: entry.id,
+        date: entry.date.toISOString(),
+        sum: entry.sum,
+        isIncome: incomeCategories.includes(entry.category.id),
+        category: {
+            _id: entry.category.id,
+            name: entry.category.name,
+        },
+    }
+}
 
 const getChildCategoryIds = async _id => {
     const result = [_id]
@@ -51,7 +62,7 @@ const getChildCategoryIds = async _id => {
         result.push(child._id, ...(await getChildCategoryIds(child._id)))
     }
 
-    return result.map(result => result._id)
+    return result
 }
 
 export const entriesService = {

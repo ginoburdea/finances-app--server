@@ -10,6 +10,7 @@ const entryValidator = Joi.object({
     _id: Joi.string().pattern(mongoIdPattern).required(),
     date: Joi.date().iso().required(),
     sum: Joi.number().required(),
+    isIncome: Joi.boolean().required(),
     category: categoryValidator,
 })
 
