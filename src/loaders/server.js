@@ -12,7 +12,10 @@ import morgan from 'morgan'
 export const loadServer = () => {
     const app = express()
 
-    app.use(morgan('common'))
+    if (process.env.NODE_ENV !== 'production') {
+        app.use(morgan('common'))
+    }
+
     app.use(bodyParser.json())
     app.use(cors({ origin: process.env.CORS_WHITELISTED_ORIGIN }))
 
