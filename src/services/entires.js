@@ -213,7 +213,7 @@ export const entriesService = {
         return Array(totalDays)
             .fill(null)
             .map((_, index) => {
-                const currentDate = minDateDayjs.add(index, 'days')
+                const currentDate = minDateDayjs.add(index + 1, 'days')
 
                 const foundTotal = totals.find(total =>
                     dayjs(total.date).isSame(currentDate)
