@@ -10,6 +10,12 @@ export const graphqlHandleContext = async req => {
 
     const token = req.headers.authorization.replace('Bearer ', '')
     const userId = await authService.tokenToUser(token)
+    if (!userId) return
 
+    req.raw.log.info({
+        msg: 'successful auth',
+        context: 'auth-middleware',
+        userId,
+    })
     return { userId }
 }

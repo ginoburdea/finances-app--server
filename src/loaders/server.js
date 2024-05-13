@@ -8,16 +8,42 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { graphqlHandleContext } from '../utils/graphqlHandleContext.js'
 import morgan from 'morgan'
+import pinoHttp from 'pino-http'
+import { httpLogger } from '../utils/loggers.js'
+import { randomUUID } from 'crypto'
+import { errorLoggerMiddleware } from '../utils/errorLoggerMiddleware.js'
 
 export const loadServer = () => {
     const app = express()
 
-    if (process.env.NODE_ENV !== 'production') {
-        app.use(morgan('common'))
-    }
-
     app.use(bodyParser.json())
     app.use(cors({ origin: process.env.CORS_WHITELISTED_ORIGIN }))
+
+    if (process.env.NODE_ENV !== 'production') {
+        app.use(morgan('common'))
+    } else {
+        app.use(
+            pinoHttp({
+                logger: httpLogger,
+                redact: ['req.headers.authorization'],
+                genReqId: () => randomUUID(),
+                quietReqLogger: true,
+                serializers: {
+                    req: req => ({
+                        ...req,
+                        id: undefined,
+                        remoteAddress:
+                            req.headers['x-forwarded-for'] || req.remoteAddress,
+                        remotePort:
+                            req.headers['x-forwarded-for-port'] ||
+                            req.remotePort,
+                    }),
+                },
+            })
+        )
+    }
+
+    app.use(errorLoggerMiddleware)
 
     app.all(
         '/graphql',
