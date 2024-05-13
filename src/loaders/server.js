@@ -12,6 +12,7 @@ import pinoHttp from 'pino-http'
 import { httpLogger } from '../utils/loggers.js'
 import { randomUUID } from 'crypto'
 import { errorLoggerMiddleware } from '../utils/errorLoggerMiddleware.js'
+import { errors } from '../utils/errors.js'
 
 export const loadServer = () => {
     const app = express()
@@ -55,6 +56,14 @@ export const loadServer = () => {
             context: graphqlHandleContext,
         })
     )
+
+    app.use('*', (req, res) => {
+        res.status(404).send(errors.notFound)
+    })
+
+    app.use((err, req, res, next) => {
+        res.status(500).send(errors.unknown)
+    })
 
     return app
 }
