@@ -24,19 +24,18 @@ export const errorLoggerMiddleware = function (req, res, next) {
                 .replaceAll(/#.*$/gm, '')
                 .replaceAll('\n', '')
                 .replaceAll('\r', '')
+                .replaceAll('\t', '')
                 .replaceAll(' ', '')
 
-            const matcher =
-                /(?<=(?<operationType>mutation|query).*{)(?<operation>[^\({]+)/
+            const matcher = /(?<=(?<operationType>mutation|query).*{)(?<operation>[^\({]+)/
 
             const parsed = matcher.exec(graphqlQuery)
 
             if (body?.errors) {
-                const error = body.errors
                 req.log.warn({
                     msg: 'graphql error',
                     context: 'graphql',
-                    err: error?.extensions?.code || error.message,
+                    err: body.errors[0],
                     ...parsed.groups,
                 })
             } else if (body?.data) {
