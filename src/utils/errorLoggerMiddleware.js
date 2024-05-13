@@ -21,6 +21,7 @@ export const errorLoggerMiddleware = function (req, res, next) {
             const body = JSON.parse(Buffer.concat(chunks).toString('utf8'))
 
             const graphqlQuery = req.body.query
+                .replaceAll(/#.*$/gm, '')
                 .replaceAll('\n', '')
                 .replaceAll('\r', '')
                 .replaceAll(' ', '')
